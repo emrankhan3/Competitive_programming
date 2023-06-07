@@ -1,0 +1,145 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+//#define int long long
+#define wt getchar();
+#define ttt cout<<"T"<<endl;
+
+#define dbg1(x) cerr<<#x<<": "<<x<<endl;
+#define dbg2(x,y) cerr<<#x<<": "<<x<<", "<<#y<<": "<<y<<endl;
+#define dbg3(x,y,z) cerr<<#x<<": "<<x<<", "<<#y<<": "<<y<<", "<<#z<<": "<<z<<endl;
+#define dbg4(x,y,z,xx) cerr<<#x<<": "<<x<<", "<<#y<<": "<<y<<", "<<#z<<", "<<z<<", "<<#xx<<": "<<xx<<endl;
+#define visar(x) for(int i:x) cerr<<i<<" "; cerr<<endl;
+#define pb push_back
+#define ts cerr<<"TTTT"<<endl;
+#define ty int t; cin >> t; while(t--)
+
+
+template <typename Ta>
+Ta min ( Ta a, Ta b, Ta c ) {return min ( a, min ( b, c ) );}
+template <typename Ta>
+Ta min ( Ta a, Ta b, Ta c, Ta d ) {return min ( a, min ( b, c, d ) );}
+template <typename Ta>
+Ta max ( Ta a, Ta b, Ta c ) {return max ( a, max ( b, c ) );}
+template <typename Ta>
+Ta max ( Ta a, Ta b, Ta c, Ta d ) {return max ( a, max ( b, c, d ) );}
+
+
+
+const int mod  = 1e9 + 7;
+const int eps  = 1e-9 ;
+const int maxn = 4e5 + 5;
+const int inf  = 5e18 ;
+const int minf = -inf ;
+
+int arr[100020];
+int tree[305000];
+
+void init ( int node, int b, int e )
+{
+    if ( b == e ) {
+        tree[node] = arr[b];
+        return;
+    }
+
+    int left = node * 2;
+    int right = left + 1;
+    int mid = ( b + e ) / 2;
+    init ( left, b, mid );
+    init ( right, mid + 1, e );
+    tree[node] = min(tree[left],tree[right]);
+
+}
+int query ( int node, int b, int e, int i, int j )
+{
+
+    if ( i > e || j < b ) { return 99999999ll; }
+
+    if ( b >= i && e <= j ) { return tree[node]; }
+
+    int left = node * 2;
+    int right = left + 1;
+    int mid = ( b + e ) / 2;
+    int p1 =  query ( left, b, mid, i, j );
+    int p2 =  query ( right, mid + 1, e, i, j );
+    return min(p1 , p2);
+}
+void update ( int node, int b, int e, int i, int v )
+{
+    if ( i < b || i > e ) { return; }
+
+    if ( i <= b && i >= e ) {
+        tree[node] = v;
+        return;
+    }
+
+    int left = node * 2;
+    int right = left + 1;
+    int mid = ( b + e ) / 2;
+    update ( left, b, mid, i, v );
+    update ( right, mid + 1, e, i, v );
+    tree[node] = tree[left] + tree[right];
+}
+void add ( int node, int b, int e, int i, int v )
+{
+    if ( i < b || i > e ) { return; }
+
+    if ( b == e ) {
+        tree[node] += v;
+        return;
+    }
+
+    int left = node * 2;
+    int right = left + 1;
+    int mid = ( b + e ) / 2;
+    add ( left, b, mid, i, v );
+    add ( right, mid + 1, e, i, v );
+    tree[node] = tree[left] + tree[right];
+}
+int mn ( int node, int b, int e, int i, int j )
+{
+
+}
+
+int main()
+{
+//
+#ifdef emran
+    ifstream cin ( "input.txt" );
+    ofstream cout ( "output.txt" );
+#endif
+
+
+    ios::sync_with_stdio ( 0 );
+    cin.tie ( 0 );
+    cout.tie ( 0 );
+
+    int cas = 1;
+    function<void() >kick = [&]() {
+
+        int n, q;
+        cin >> n >> q;
+
+        for ( int i = 0; i < n; i++ )
+        { cin >> arr[i+1]; }
+
+
+        init ( 1, 1, n );
+
+        cout<<"Case "<<cas++<<":\n";
+        for ( int ii = 0; ii < q; ii++ ) {
+            int i,j;
+            cin>>i>>j;
+            cout<<query(1,1,n,i,j)<<endl;
+        }
+    };
+
+
+    int t;
+    cin >> t;
+
+    while ( t-- )
+    { kick(); }
+
+}
