@@ -1,0 +1,43 @@
+int arr[100040];
+ver tree[300050];
+
+void init(int node,int b,int e){
+    if(b==e){
+        tree[node].sum=arr[b];
+        return;
+    }
+    int left = node<<1;
+    int right=left+1;
+    int mid = (b+e)/2;
+
+    init(left,b,mid);
+    init(right,mid+1,e);
+    tree[node].sum=tree[left].sum+tree[right].sum;
+}
+
+void update(int node,int b,int e,int i,int j,int v){
+    if(i>e||j<b)return;
+    if(i<=b && j>=e){
+        tree[node].sum+=v*(e-b+1);
+        tree[node].lazy+=v;
+        return;
+    }
+    int left = node<<1;
+    int right=left+1;
+    int mid = (b+e)/2;
+    update(left,b,mid,i,j,v);
+    update(right,mid+1,e,i,j,v);
+    tree[node].sum=(tree[left].sum+tree[right].sum)+tree[node].lazy*(e-b+1);
+}
+int query(int node,int b,int e,int i,int j, int c){
+    if(i>e || j<b)return 0;
+    if(i<=b && j>=e){
+        return c+tree[node].sum;
+    }
+    int left = node<<1;
+    int right=left+1;
+    int mid = (b+e)/2;
+    int l= query(left,b,mid,i,j,c+tree[node].lazy);
+    int r= query(right,mid+1,e,i,j,c+tree[node].lazy);
+    return l+r;
+}
