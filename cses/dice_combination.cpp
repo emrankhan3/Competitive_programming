@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -75,6 +76,7 @@ void rd(int &a){
 }
 #define M 2000006
 
+    int dp[2000200];
 int32_t main()
 {
 
@@ -88,29 +90,37 @@ int32_t main()
     cin.tie ( 0 );
     cout.tie ( 0 );
 
-    int dp[1000];
-    int coins[1000];
-    int ans=0;
-    for(int i=0; i<=108; i++)dp[i]=-1;
 
-    function<int(int,int)>DP=[&](int len,int need){
-        if(dp[need])return dp[need];
-        if(need==0)return 1;
-        if(need<0)return 0;
-        for(int i=1; i<=len;i++){
-            if(coins[i]<=need)dp[need]+=DP(len,need-coins[i]);
-        }
-        return dp[need];
-    };
+
+
+
 
     function<void ( int ) >kick = [&] ( int asdf ) {
         ll n,c;
-        cin>>n>>c;
+        cin>>n;
+        dp[0]=1;
+        dp[1]=1;
+        dp[2]=2;
+        dp[3]=4;
+        dp[4]=8;
+        dp[5]=16;
+        dp[6]=32;
+        for(int i=7; i<=n; i++){
+            dp[i]+=dp[i-1];
+            dp[i]%=mod;
+            dp[i]+=dp[i-2];
+            dp[i]%=mod;
+            dp[i]+=dp[i-3];
+            dp[i]%=mod;
+            dp[i]+=dp[i-4];
+            dp[i]%=mod;
+            dp[i]+=dp[i-5];
+            dp[i]%=mod;
+            dp[i]+=dp[i-6];
+            dp[i]%=mod;
 
-        for(int i=1; i<=n; i++)
-            cin>>coins[i];
-        DP(n,c);
-        cout<<dp[c]<<endl;
+        }
+        cout<<dp[n]<<endl;
     };
 
    // ty
