@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -74,7 +75,31 @@ void rd(int &a){
     scanf("%d",&a);
 }
 #define M 2000006
+using namespace std;
+ll n,value,t,cas=1;
+vector<int>vec,prime,Adj[M];
+bool vis[M+4];
+int frq[M];
+void sieve(){
+    prime.push_back(2);
+    for(int i=2;i<M;i+=2)
+        Adj[i].push_back(2);
+    for(int i=3;i*i<=M;i+=2){
+        if(vis[i]==0){
+            for(int j=i*i;j<=M;j+=i)
+                vis[j] = 1;
+        }
+    }
 
+    for(int i=3;i<M;i+=2){
+        if(vis[i]==0){
+            for(int j=i;j<M;j+=i)
+                Adj[j].push_back(i);
+        }
+    }
+
+}
+int ar[3020][3020];
 int32_t main()
 {
 
@@ -87,25 +112,38 @@ int32_t main()
     ios::sync_with_stdio ( 0 );
     cin.tie ( 0 );
     cout.tie ( 0 );
-
-    int dp[1000];
-    int coins[1000];
-    int ans=0;
-    for(int i=0; i<=108; i++)dp[i]=-1;
-
-
+   // sieve();
 
     function<void ( int ) >kick = [&] ( int asdf ) {
-        ll n,c;
-        cin>>n>>c;
+        ll n,m,q;
+        cin>>n>>m>>q;
+        while(q--){
+            int x,y=0;
+            cin>>x>>y;
+            ar[x][y]=-1;
+        }
+        for(int i=1; i<=n; i++){
+            for(int j=1; j<=m; j++){
+                if(ar[i][j]==-1){
+                    continue;
+                }
+                int mn = min(ar[i-1][j],ar[i][j-1]);
+                mn=min(mn,ar[i-1][j-1]);
+                if(mn<=0)ar[i][j]=1;
+                else ar[i][j]=1+mn;
+            }
+        }
+        ll ans=0;
+        for (int i=1; i<=n; i++ )
+        {
+            for(int j=1; j<=m; j++)
+                ans+=max(0,ar[i][j]);
+        }
+        cout<<ans<<endl;
 
-        for(int i=1; i<=n; i++)
-            cin>>coins[i];
-        DP(n,c);
-        cout<<dp[c]<<endl;
     };
 
-   // ty
+
     kick ( 8 );
 
 
