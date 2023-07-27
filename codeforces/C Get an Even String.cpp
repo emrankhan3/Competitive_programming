@@ -1,5 +1,3 @@
-
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -53,49 +51,58 @@ const int maxn = 4e5 + 5;
 const int inf  = 5e18 ;
 const int minf = -inf ;
 
-ll inv(ll i) {if (i == 1) return 1; return (mod - ((mod / i) * inv(mod % i)) % mod) % mod;}
+ll inv ( ll i ) {if ( i == 1 ) return 1; return ( mod - ( ( mod / i ) * inv ( mod % i ) ) % mod ) % mod;}
 
-ll mod_mul(ll a, ll b) {a = a % mod; b = b % mod; return (((a * b) % mod) + mod) % mod;}
+ll mod_mul ( ll a, ll b ) {a = a % mod; b = b % mod; return ( ( ( a * b ) % mod ) + mod ) % mod;}
 
-ll mod_add(ll a, ll b) {a = a % mod; b = b % mod; return (((a + b) % mod) + mod) % mod;}
+ll mod_add ( ll a, ll b ) {a = a % mod; b = b % mod; return ( ( ( a + b ) % mod ) + mod ) % mod;}
 
-ll gcd(ll a, ll b) { if (b == 0) return a; return gcd(b, a % b);}
+ll gcd ( ll a, ll b ) { if ( b == 0 ) return a; return gcd ( b, a % b );}
 
-ll ceil_div(ll a, ll b) {return a % b == 0 ? a / b : a / b + 1;}
+ll ceil_div ( ll a, ll b ) {return a % b == 0 ? a / b : a / b + 1;}
 
-ll pwr(ll a, ll b)
-{a %= mod; ll res = 1;
- while (b > 0) {if (b & 1) res = res * a % mod; a = a * a % mod; b >>= 1;}
-  return res;}
+ll pwr ( ll a, ll b )
+{
+    a %= mod;
+    ll res = 1;
+
+    while ( b > 0 ) {if ( b & 1 ) res = res * a % mod; a = a * a % mod; b >>= 1;}
+
+    return res;
+}
 
 void rd ( ll &a )
 {
     scanf ( "%lld", &a );
 }
-void rd(int &a){
-    scanf("%d",&a);
+void rd ( int &a )
+{
+    scanf ( "%d", &a );
 }
 #define M 2000006
 using namespace std;
-ll n,value,t,cas=1;
-vector<int>vec,prime,Adj[M];
-bool vis[M+4];
+ll n, value, t, cas = 1;
+vector<int>vec, prime, Adj[M];
+bool vis[M + 4];
 int frq[M];
-void sieve(){
-    prime.push_back(2);
-    for(int i=2;i<M;i+=2)
-        Adj[i].push_back(2);
-    for(int i=3;i*i<=M;i+=2){
-        if(vis[i]==0){
-            for(int j=i*i;j<=M;j+=i)
-                vis[j] = 1;
+void sieve()
+{
+    prime.push_back ( 2 );
+
+    for ( int i = 2; i < M; i += 2 )
+    { Adj[i].push_back ( 2 ); }
+
+    for ( int i = 3; i * i <= M; i += 2 ) {
+        if ( vis[i] == 0 ) {
+            for ( int j = i * i; j <= M; j += i )
+            { vis[j] = 1; }
         }
     }
 
-    for(int i=3;i<M;i+=2){
-        if(vis[i]==0){
-            for(int j=i;j<M;j+=i)
-                Adj[j].push_back(i);
+    for ( int i = 3; i < M; i += 2 ) {
+        if ( vis[i] == 0 ) {
+            for ( int j = i; j < M; j += i )
+            { Adj[j].push_back ( i ); }
         }
     }
 
@@ -114,75 +121,40 @@ int32_t main()
     ios::sync_with_stdio ( 0 );
     cin.tie ( 0 );
     cout.tie ( 0 );
-   // sieve();
+    // sieve();
 
-    function<void ( int ) >kick = [&] ( int asdf ) {
-        ll n,k;
-        cin>>n;
+      function<void ( int ) >kick = [&] ( int asdf ) {
+            ll n, k;
+            string s;
+            cin >> s;
+            ll ans = 0;
+            ll cn=0;
+            int ar[30]={0};
 
-        ll p = (n*(n+1))/2;
-        //cout<<p<<endl;
-        vector<ll>v;
-        ll ar[n+5]={0};
+            for ( int i = 0; i < s.size() ; i+=2 ) {
+                  if(i!=s.size()-1 && s[i]==s[i+1])continue;
+                  bool fl=1;
+                  for(int j=i;j<s.size();j++){
 
-        for(int i=0; i<n-1; i++){
-            ll x;cin>>x;
-            v.pb(x);
-        }
+                        ar[(int)(s[j]-'a')]++;
+                        int cn=0;
+                        for(int k=0; k<28;k++)if(ar[k]==2)cn++;
 
-
-        ll freq[n+5]={0};
-
-
-        ll lcn=0;
-        ll fcn=0;
-        vector<ll>xval;
-
-        if(v[0]<=n)freq[v[0]]++;
-        else{
-            xval.pb(v[0]);
-        }
-
-        for(int i=1; i<n-1; i++){
-            ll val = v[i]-v[i-1];
-            if(val<=n)freq[val]++;
-            else{
-                xval.pb(val);
+                        if(cn){
+                              for(int k=0; k<28;k++)ar[k]=0;
+                              ans+=j-i+1-2;
+                              i=j-1;
+                              fl=0;
+                              //dbg2(i,j)
+                              break;
+                        }
+                  }
+                  if(fl){
+                        ans+=s.size()-i;
+                        i=s.size()+4;
+                  }
             }
-            if(val<=n && freq[val]==2){
-                xval.pb(val);
-            }
-
-        }
-        if(xval.size()>1){
-            cout<<"NO"<<endl;
-            return;
-        }
-
-        ll missedVal=0;
-        for(int i=1; i<=n; i++)
-        {
-            if(freq[i]==0)fcn+=i,missedVal++;
-
-        }
-
-        if(missedVal>2){
-            cout<<"NO"<<endl;
-            return;
-        }
-        if(missedVal==1 && fcn+v[n-2]==p){
-            cout<<"YES"<<endl;
-            return;
-        }
-        if(xval.size()==1 && fcn==xval[0]){
-            cout<<"YES"<<endl;
-            return;
-        }
-        cout<<"NO"<<endl;
-
-
-
-
+            cout<<ans<<endl;
 
 
     };
